@@ -3,11 +3,10 @@
 include_once "navbar.php";
 include_once "../Mapping/mappingClient.php";
 include_once "../Mapping/mappingProduit.php";
-include_once "../Service/serviceChiffreAffaireParClient.php";
 
-function afficheClientAvecChiffreAffaire()
+function afficheClientChiffreAffaire()
 {
-    $lstClientAvecChiffreAffaire = getClientAvecChiffreAffaire();
+    $lstClient = newGetTotalProduitByClient();
     $str = "";
 
     $str .= '<table class="table">';
@@ -20,15 +19,17 @@ function afficheClientAvecChiffreAffaire()
     $str .= '            </tr>';
     $str .= '        </thead>';
     $str .= '    <tbody>';
-    if ($lstClientAvecChiffreAffaire != null)
+    if ($lstClient != null)
     {
-        foreach ($lstClientAvecChiffreAffaire as $client)
+        foreach ($lstClient as $client)
         {
             $str .= '        <tr>';
             $str .= '            <th scope="row"></th>';
             $str .= '            <td>' . $client->nom . ' ' . $client->prenom . '</td>';
-            $total = getTotalProduitByClient($client->id_client);
-            $str .= '            <td>' . $total . ' €</td>';
+            $euro = '';
+            if ($client->total != null)
+                $euro = '€';
+            $str .= '            <td>' . $client->total . ' ' . $euro . ' </td>';
             $str .= '        </tr>';
         }
     }
@@ -44,42 +45,7 @@ function afficheClientAvecChiffreAffaire()
     return $str;
 }
 
-function afficheClientSansChiffreAffaire()
-{
-    $lstClientAvecChiffreAffaire = getClientSansChiffreAffaire();
-    $str = "";
-
-    $str .= '<table class="table">';
-    $str .= '    <thead class="thead-light">';
-    $str .= '        <td colspan="4" style="text-align: center; background-color: #17a2b8">Clients sans chiffre d\'affaire</td>';
-    $str .= '            <tr>';
-    $str .= '                <th scope="col" style="text-align: center;">Client</th>';
-    $str .= '            </tr>';
-    $str .= '        </thead>';
-    $str .= '    <tbody>';
-    if ($lstClientAvecChiffreAffaire != null)
-    {
-        foreach ($lstClientAvecChiffreAffaire as $client)
-        {
-            $str .= '        <tr>';
-            $str .= '            <td colspan="4" style="text-align: center;">' . $client->nom . ' ' . $client->prenom . '</td>';
-            $str .= '        </tr>';
-        }
-    }
-    else
-    {
-        $str .= '        <tr>';
-        $str .= '            <td colspan="4" class="text-center">Il n\'existe pas de client sans chiffre d\'affaire.</td>';
-        $str .= '        </tr>';
-    }
-    $str .=  '    </tbody>';
-    $str .=  '</table>';
-
-    return $str;
-}
-
 ?>
-
 
 <html>
     <head>
@@ -88,7 +54,6 @@ function afficheClientSansChiffreAffaire()
         <script src="../Css/bootstrap/js/bootstrap.bundle.js"></script>
     </head>
     <body>
-    <?php echo afficheClientAvecChiffreAffaire(); ?>
-    <?php echo afficheClientSansChiffreAffaire(); ?>
+    <?php echo afficheClientChiffreAffaire(); ?>
     </body>
 </html>
