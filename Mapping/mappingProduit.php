@@ -39,7 +39,7 @@ function newGetTotalProduitByClient()
 {
     $db = connect();
 
-    $request = $db->query ('SELECT client.nom, client.prenom, SUM(produit.prix) as total FROM client LEFT JOIN produit ON client.id_client = produit.id_produit GROUP BY client.nom');
+    $request = $db->query ('SELECT client.nom, client.prenom, SUM(produit.prix) as total FROM client LEFT JOIN produit ON client.id_client = produit.id_client GROUP BY client.id_client');
     $result = $request->fetchAll(PDO::FETCH_OBJ);
 
     return $result;
@@ -61,7 +61,7 @@ function saveProduit(Produit $produit)
 
     $query = $db->prepare( 'INSERT INTO produit (libelle, prix, id_client) VALUES (:libelle, :prix, :id_client)');
     $query->bindValue(':libelle', verifyString($produit->Libelle), PDO::PARAM_STR);
-    $query->bindValue(':prix', $produit->Prix, PDO::PDO_INT); //
+    $query->bindValue(':prix', $produit->Prix, PDO::PARAM_INT); //
     $query->bindValue(':id_client', $produit->IdClient, PDO::PARAM_INT);
     $query->execute();
 }
